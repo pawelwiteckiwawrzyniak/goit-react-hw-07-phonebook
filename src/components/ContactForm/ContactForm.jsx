@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
-import { getContacts } from 'redux/selectors';
+import { addContact } from 'redux/operations';
+import { selectContacts } from 'redux/selectors';
 import css from './ContactForm.module.css';
 import { nanoid } from '@reduxjs/toolkit';
 
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(selectContacts);
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -19,7 +19,7 @@ export const ContactForm = () => {
     if (contactList.find(contact => contact === name)) {
       return alert(name + ' is already in your contacts!');
     }
-    dispatch(addContact(name, number, id));
+    dispatch(addContact({ name: name, number: number, id: id }));
     form.reset();
   };
 

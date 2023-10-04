@@ -1,33 +1,18 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getContacts } from 'redux/selectors';
-import { addContact } from 'redux/contactsSlice';
+import { selectIsLoading } from 'redux/selectors';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { ContactFilter } from './ContactFilter/ContactFilter';
+import { fetchContacts } from 'redux/operations';
 
 export const App = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const isLoading = useSelector(selectIsLoading);
 
   useEffect(() => {
-    const ls = localStorage.getItem('contacts');
-    const lsParse = JSON.parse(ls);
-
-    if (lsParse === null || lsParse.length === 0) {
-      return;
-    }
-
-    lsParse.forEach(contact => {
-      dispatch(addContact(contact.name, contact.number, contact.id));
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   return (
     <div>
@@ -35,7 +20,7 @@ export const App = () => {
       <ContactForm />
       <h2>Contacts</h2>
       <ContactFilter />
-      <ContactList />
+      {isLoading ? <p>Loading...</p> : <ContactList />}
     </div>
   );
 };
